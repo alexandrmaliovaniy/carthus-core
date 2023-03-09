@@ -1,0 +1,39 @@
+{
+  "name": "@carthus/core",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexandrmaliovaniy/carthus-core.git"
+  },
+  "author": "Alexandr Maliovaniy",
+  "keywords": [],
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.2",
+    "@rollup/plugin-node-resolve": "^14.1.0",
+    "@rollup/plugin-typescript": "^8.5.0",
+    "@types/react": "^18.0.21",
+    "react": "^18.2.0",
+    "rollup": "^2.79.1",
+    "rollup-plugin-dts": "^4.2.2",
+    "tslib": "^2.4.0",
+    "typescript": "^4.8.4"
+  },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "react-router-dom": "^6.8.2",
+    "zod": "^3.20.6"
+  }
+}
