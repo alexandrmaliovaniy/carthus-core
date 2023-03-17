@@ -2,7 +2,7 @@ import React, { FC, ReactElement, ReactNode, useMemo } from "react";
 import { IService } from "../service/CreateService";
 import { IProvider } from "../provider/CreateProvider";
 
-type TProvider<K> = FC<{children: any, props?: K}> | { provider: FC<{children: any, props?: K}>, props?: K }
+type TProvider<K> = FC<{children: ReactNode, props?: K}> | { provider: FC<{children: ReactNode, props?: K}>, props?: K }
 
 export interface ICreateComponentConfig<T, K> {
     readonly providers: Array<TProvider<K>>;
