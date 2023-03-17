@@ -35,24 +35,12 @@ function renderNestedComponents<K>(components: TProviderWithProps<K>[]) {
 
 function CreateComponent<T, K>({View, providers = []}: ICreateComponentConfig<T, K>) {
     const Component: FC<T> = (props) => {
-        const render = View(props);
         const providersWithProps = providers.map(provider => typeof provider === 'function' ? ({provider: provider, props: {}}) as TProviderWithProps<K> : provider);
         providersWithProps.push({
             provider: View,
             props: props
         })
-
         return renderNestedComponents<K>(providersWithProps);
-
-        // return providers.reduceRight((acc, el) => {
-        //     const [Provider, props] = typeof el === 'function' ? [el, undefined] : [el.provider, el.props];
-        //     if (!Provider) throw new Error(`hook ${el} has no Provider`);
-        //     return (
-        //         <Provider props={props}>
-        //             {acc}
-        //         </Provider>
-        //     )
-        // }, render);
     }
     return Component;
 }
