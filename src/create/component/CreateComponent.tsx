@@ -11,7 +11,7 @@ export interface ICreateComponentConfig<T, K> {
 
 function CreateComponent<T, K>({View, providers = []}: ICreateComponentConfig<T, K>) {
     const Component: FC<T> = (props) => {
-        const render = View(props);
+        const render = <View {...props} />;
         return providers.reduceRight((acc, el) => {
             const [Provider, props] = typeof el === 'function' ? [el, undefined] : [el.provider, el.props];
             if (!Provider) throw new Error(`hook ${el} has no Provider`);
