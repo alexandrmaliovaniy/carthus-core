@@ -2,7 +2,7 @@ import React, { FC, ReactElement, ReactNode, useMemo } from "react";
 import { IService } from "../service/CreateService";
 import { IProvider } from "../provider/CreateProvider";
 
-type TProviderComponent<K> = FC<{children?: ReactNode, props?: K}>;
+type TProviderComponent<K> = FC<{children?: ReactNode} & K>;
 type TProviderWithProps<K> = { provider: TProviderComponent<K>, props?: K };
 type TProvider<K> = TProviderComponent<K> | TProviderWithProps<K>;
 
