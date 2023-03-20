@@ -23,10 +23,15 @@ type Return<T, D> = T extends (...args: any[]) => Promise<any> ? Promise<D> : D;
 type OptionalPropertyNames<T> =
     { [K in keyof T]-?: ({} extends { [P in K]: T[K] } ? K : never) }[keyof T];
 
-type SpreadProperties<L, R, K extends keyof L & keyof R> =
-    { [P in K]: L[P] | Exclude<R[P], undefined> };
+// type SpreadProperties<L, R, K extends keyof L & keyof R> =
+//     { [P in K]: L[P] | Exclude<R[P], undefined> };
 
-type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never
+type SpreadProperties<L, R, K extends keyof L & keyof R> =
+    { [P in K]: SpreadTwo<L[P], R[P]> };
+
+type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never;
+
+// type MergeArray<L, R, K extends keyof L & keyof R> = { [P in K]: L[P] | Exclude<R[P], undefined> };
 
 type SpreadTwo<L, R> = Id<
     & Pick<L, Exclude<keyof L, keyof R>>
@@ -35,9 +40,12 @@ type SpreadTwo<L, R> = Id<
     & SpreadProperties<L, R, OptionalPropertyNames<R> & keyof L>
     >;
 
-type Spread<A extends ReadonlyArray<((...args: any) => any) | unknown>> = A extends [infer L, ...infer R] ? L extends (...args: any) => any ?
-    SpreadTwo<ReturnType<L>, Spread<R>> : unknown : unknown
 
+type Spread<A extends ReadonlyArray<((...args: any) => any) | unknown>> = A extends [infer L, ...infer R]
+    ? L extends (...args: any) => any
+        ? SpreadTwo<ReturnType<L>, Spread<R>>
+        : unknown
+    : unknown;
 
 
 function CreateData<T extends Array<any>, K extends z.Schema, M extends ReadonlyArray<(...args: any) => any>, C extends ((...args: T) => Promise<any>) | ((...args: T) => any)>({Schema, Source, middleware} : ICreateData<T, K, M, C>) {
@@ -67,6 +75,19 @@ function CreateData<T extends Array<any>, K extends z.Schema, M extends Readonly
     }
 };
 
+
+// const t = CreateData({
+//     Schema: z.object({
+//         list: z.array(z.object({
+//             title: z.string(),
+//             info: z.array(z.number())
+//         }))
+//     }),
+//     Source: () => {},
+//     middleware: [
+//         (args: { list: {title: string}[] }) => ({...args, list: args.list.map(e => ({...e, qwe: 1})) }),
+//     ] as const
+// })
 
 interface IDataProvider<T extends Array<any>> {
     (...props: T): any
