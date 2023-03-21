@@ -23,11 +23,15 @@ type Return<T, D> = T extends (...args: any[]) => Promise<any> ? Promise<D> : D;
 type OptionalPropertyNames<T> =
     { [K in keyof T]-?: ({} extends { [P in K]: T[K] } ? K : never) }[keyof T];
 
-// type SpreadProperties<L, R, K extends keyof L & keyof R> =
-//     { [P in K]: L[P] | Exclude<R[P], undefined> };
-
 type SpreadProperties<L, R, K extends keyof L & keyof R> =
-    { [P in K]: SpreadTwo<L[P], R[P]> };
+    { [P in K]: L[P] | Exclude<R[P], undefined> };
+
+
+type CommonArrayKeys<L, R, K = keyof L & keyof R, P = keyof K> = L[K] extends Array<any> ? R[K] extends Array<any> ? K : never : never;
+
+type MergeArrays<L, R, K extends keyof L & keyof R> =
+    { [P in K]: L[P] extends Array<infer M> ? R[P] extends Array<infer G> ? SpreadTwo<M, G>[] : R[P] : R[P] }
+    // { [P in K]: SpreadTwo<L[P][number], R[P][number]> };
 
 type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never;
 
@@ -35,8 +39,9 @@ type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never;
 
 type SpreadTwo<L, R> = Id<
     & Pick<L, Exclude<keyof L, keyof R>>
-    & Pick<R, Exclude<keyof R, OptionalPropertyNames<R>>>
+    & Pick<R, Exclude<Exclude<keyof R, OptionalPropertyNames<R>>, CommonArrayKeys<L, R>>>
     & Pick<R, Exclude<OptionalPropertyNames<R>, keyof L>>
+    & MergeArrays<L, R, keyof L & keyof R>
     & SpreadProperties<L, R, OptionalPropertyNames<R> & keyof L>
     >;
 
@@ -80,6 +85,7 @@ function CreateData<T extends Array<any>, K extends z.Schema, M extends Readonly
 //     Schema: z.object({
 //         list: z.array(z.object({
 //             title: z.string(),
+//             asdasd: z.string(),
 //             info: z.array(z.number())
 //         }))
 //     }),
@@ -88,6 +94,8 @@ function CreateData<T extends Array<any>, K extends z.Schema, M extends Readonly
 //         (args: { list: {title: string}[] }) => ({...args, list: args.list.map(e => ({...e, qwe: 1})) }),
 //     ] as const
 // })
+//
+// const d = t();
 
 interface IDataProvider<T extends Array<any>> {
     (...props: T): any
