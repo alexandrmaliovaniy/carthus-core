@@ -60,7 +60,7 @@ function CreateData<T extends Array<any>, K extends z.Schema, M extends Readonly
 
     return (...args: T): Return<typeof Source, ReturnData> => {
         if (Source.constructor.name === 'AsyncFunction') {
-            Source(...args)
+            return Source(...args)
                 .then(result => {
                     Schema.parse(result);
                     let finalRes = result as z.infer<typeof Schema>;
