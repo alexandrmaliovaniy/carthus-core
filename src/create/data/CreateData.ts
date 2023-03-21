@@ -1,4 +1,4 @@
-import {object, z} from 'zod';
+import {infer, object, z} from 'zod';
 import * as Path from "path";
 
 interface ICreateData<T extends Array<any>, K extends z.Schema, M extends ReadonlyArray<(...args: any) => any>, C extends ((...args: T) => Promise<any>) | ((...args: T) => any)> {
@@ -97,10 +97,8 @@ function CreateData<T extends Array<any>, K extends z.Schema, M extends Readonly
 //
 // const d = t();
 
-interface IDataProvider<T extends Array<any>> {
-    (...props: T): any
-}
+type ReturnData<T extends (...args: any) => any> = T extends (...args: any) => infer F ? F extends Promise<infer C> ? C : F : never;
 
-export type { IDataProvider }
+export type { ReturnData }
 
 export default CreateData;
