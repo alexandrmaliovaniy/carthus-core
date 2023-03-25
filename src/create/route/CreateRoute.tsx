@@ -3,16 +3,18 @@ import {NonIndexRouteObject, Outlet, RouteObject} from "react-router-dom";
 
 interface ICreateRouteProps {
     path: string;
-    Guard: FC | null;
+    Guard: FC<{ children: any }> | null;
+    Layout: FC | null;
     Component: FC | null;
     routes: RouteObject[] | RouteObject[][];
 }
 
-function CreateRoute({path, Guard, Component, routes}: ICreateRouteProps): RouteObject[] {
-    if (Guard) {
+function CreateRoute({path, Guard, Component, Layout, routes}: ICreateRouteProps): RouteObject[] {
+    if (Guard || Layout) {
+        const Wrapper = Guard && <Guard><Layout /></Guard> || <Layout />;
         const route: RouteObject = {
             path: path,
-            element: <Guard />,
+            element: Wrapper,
             children: [{path: "", element: Component && <Component />}, ...routes.flat()]
         }
         return [route];

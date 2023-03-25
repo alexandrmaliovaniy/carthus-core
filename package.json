@@ -1,7 +1,16 @@
 {
   "name": "@carthus/core",
-  "version": "1.1.0",
-  "description": "",
+  "version": "1.1.5",
+  "description": "Utility functions for React",
+  "keywords": [
+    "react",
+    "utility",
+    "framework",
+    "code",
+    "generator",
+    "tool",
+    "toolkit"
+  ],
   "scripts": {
     "build": "rollup -c"
   },
@@ -13,7 +22,6 @@
     "url": "git+https://github.com/alexandrmaliovaniy/carthus-core.git"
   },
   "author": "Alexandr Maliovaniy",
-  "keywords": [],
   "license": "ISC",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.2",

@@ -1,18 +1,21 @@
-import React, {FC, ReactElement} from "react";
-import {NonIndexRouteObject, Outlet, RouteObject} from "react-router-dom";
+import React, {FC} from "react";
+import {RouteObject} from "react-router-dom";
 
 interface ICreateRouterProps {
     path: string;
-    Guard: FC | null;
+    Guard: FC<{ children: any }> | null;
+    Layout: FC | null;
     Component: FC | null;
     routes: RouteObject[] | RouteObject[][];
 }
 
-function CreateRouter({path, Guard, Component, routes}: ICreateRouterProps): RouteObject[] {
-    if (Guard) {
+
+function CreateRouter({path, Guard, Layout, Component, routes}: ICreateRouterProps): RouteObject[] {
+    if (Guard || Layout) {
+        const Wrapper = Guard && <Guard><Layout /></Guard> || <Layout />;
         const route: RouteObject = {
             path: path,
-            element: <Guard />,
+            element: Wrapper,
             children: [{path: "", element: Component && <Component />}]
         }
         return [route, ...routes.flat().map(route => ({...route, path: path + route.path}))];

@@ -1,5 +1,4 @@
-import {infer, object, z} from 'zod';
-import * as Path from "path";
+import {z} from 'zod';
 
 interface ICreateData<T extends Array<any>, K extends z.Schema, M extends ReadonlyArray<(...args: any) => any>, C extends ((...args: T) => Promise<any>) | ((...args: T) => any)> {
     Schema: K,
