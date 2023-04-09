@@ -9,6 +9,7 @@ type TProvider<K> = TProviderComponent<K> | TProviderWithProps<K>;
 export interface ICreateComponentConfig<T, K> {
     readonly providers: Array<TProvider<K>>;
     View: FC<T>;
+    forwardRef?: boolean;
 }
 
 function renderNestedComponents<K>(components: TProviderWithProps<K>[]) {
@@ -33,7 +34,15 @@ function renderNestedComponents<K>(components: TProviderWithProps<K>[]) {
     return <Component {...props}>{nestedComponents}</Component>;
 }
 
-function CreateComponent<T, K>({View, providers = []}: ICreateComponentConfig<T, K>) {
+function CreateComponent<T, K>({View, providers = [], forwardRef = false}: ICreateComponentConfig<T, K>) {
+    if (forwardRef) return React.forwardRef((props, ref) => {
+        const providersWithProps = providers.map(provider => typeof provider === 'function' ? ({provider: provider, props: {}}) as TProviderWithProps<K> : provider);
+        providersWithProps.push({
+            provider: View,
+            props: {...props, ref}
+        })
+        return renderNestedComponents<K>(providersWithProps);
+    }) as FC<T>;
     const Component: FC<T> = (props) => {
         const providersWithProps = providers.map(provider => typeof provider === 'function' ? ({provider: provider, props: {}}) as TProviderWithProps<K> : provider);
         providersWithProps.push({
