@@ -33,7 +33,7 @@ function renderNestedComponents<K>(components: TProviderWithProps<K>[]) {
     return <Component {...props}>{nestedComponents}</Component>;
 }
 
-function CreateComponent<T, K>({View, providers = [], forwardRef = false}: ICreateRefComponentConfig<T, K>) {
+function CreateRefComponent<T, K>({View, providers = [], forwardRef = false}: ICreateRefComponentConfig<T, K>) {
     if (forwardRef) return React.forwardRef((props, ref) => {
         const providersWithProps = providers.map(provider => typeof provider === 'function' ? ({provider: provider, props: {}}) as TProviderWithProps<K> : provider);
         providersWithProps.push({
@@ -53,4 +53,4 @@ function CreateComponent<T, K>({View, providers = [], forwardRef = false}: ICrea
     return Component;
 }
 
-export default CreateComponent;
+export default CreateRefComponent;
