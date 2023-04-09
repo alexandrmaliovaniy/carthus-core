@@ -6,7 +6,7 @@ type TProviderComponent<K> = FC<{children?: ReactNode} & K>;
 type TProviderWithProps<K> = { provider: TProviderComponent<K>, props?: K };
 type TProvider<K> = TProviderComponent<K> | TProviderWithProps<K>;
 
-export interface ICreateComponentConfig<T, K> {
+export interface ICreateRefComponentConfig<T, K> {
     readonly providers: Array<TProvider<K>>;
     View: FC<T>;
 }
@@ -33,15 +33,23 @@ function renderNestedComponents<K>(components: TProviderWithProps<K>[]) {
     return <Component {...props}>{nestedComponents}</Component>;
 }
 
-function CreateComponent<T, K>({View, providers = []}: ICreateComponentConfig<T, K>) {
-    const Component: FC<T> = (props) => {
+function CreateComponent<T, K>({View, providers = [], forwardRef = false}: ICreateRefComponentConfig<T, K>) {
+    if (forwardRef) return React.forwardRef((props, ref) => {
         const providersWithProps = providers.map(provider => typeof provider === 'function' ? ({provider: provider, props: {}}) as TProviderWithProps<K> : provider);
         providersWithProps.push({
             provider: View,
-            props: props
+            props: {...props, ref}
         })
         return renderNestedComponents<K>(providersWithProps);
-    }
+    }) as FC<T>;
+    const Component: FC<T> = React.forwardRef((props, ref) => {
+        const providersWithProps = providers.map(provider => typeof provider === 'function' ? ({provider: provider, props: {}}) as TProviderWithProps<K> : provider);
+        providersWithProps.push({
+            provider: View,
+            props: {...props, ref}
+        })
+        return renderNestedComponents<K>(providersWithProps);
+    });
     return Component;
 }
 
