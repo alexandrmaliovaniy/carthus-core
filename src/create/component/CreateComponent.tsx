@@ -57,6 +57,8 @@ function renderNestedComponents<K, T>(components: TProviderComponent[], actualPr
 
     const Component = components[0];
 
+    console.log(actualProps)
+
     if (components.length === 1) {
         return <Component {...actualProps} />
     }
@@ -68,16 +70,14 @@ function renderNestedComponents<K, T>(components: TProviderComponent[], actualPr
     const nestedComponents = renderNestedComponents(components.slice(1), actualProps);
 
     // Render the current component and its nested components
+    console.log(actualProps)
     return <Component {...actualProps}>{nestedComponents}</Component>;
 }
 
 function CreateComponent<T, K extends readonly any[]>({View, providers }: ICreateComponentConfig<T, K>) {
     const Component: FC<Spread<[FC<T>, ...K]>> = (props) => {
-        providers.push({
-            provider: View,
-            props: props
-        })
-        return renderNestedComponents<K, T>(providers, props);
+        console.log("QWE");
+        return renderNestedComponents<K, T>([...providers, View], props);
     }
     return Component;
 }
