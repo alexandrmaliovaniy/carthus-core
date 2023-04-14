@@ -2,6 +2,8 @@ import React, {FC, FunctionComponent, ReactElement, ReactNode, useMemo} from "re
 import { IService } from "../service/CreateService";
 import { IProvider } from "../provider/CreateProvider";
 
+export type ComponentProps<F> = F extends FC<infer P> ? P : never;
+
 type TProviderComponent = FC<{children?: ReactNode}>;
 
 type Return<T, D> = T extends (...args: any[]) => Promise<any> ? Promise<D> : D;
