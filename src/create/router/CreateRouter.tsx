@@ -17,7 +17,6 @@ const UpdatePath = (routes: IRoute, path: string) => {
     routes.forEach(route => {
         if (!route.Check) return;
         route.Route.PATH = (path + "/" + route.path).replace(/\/+/, "/");
-        console.log(route.Route.PATH, path, route.path)
         if (!route.children) return;
         route.children.forEach(children => {
             if (!children.Check) return;
