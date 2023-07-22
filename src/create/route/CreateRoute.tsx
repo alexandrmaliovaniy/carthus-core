@@ -2,13 +2,13 @@ import React, {FC, ReactElement} from "react";
 import {IndexRouteObject, NonIndexRouteObject, Outlet, RouteObject} from "react-router-dom";
 
 type IRoute = IRouteElement[] & { PATH: Readonly<string> };
-type IRouteElement = NonIndexRouteObject & { Route: IRoute };
+type IRouteElement = NonIndexRouteObject & { Route: IRoute, Check?: boolean };
 
 interface ICreateRouteProps {
     path: string;
-    Guard: FC<{ children: any }> | null;
-    Layout: FC | null;
-    Component: FC | null;
+    Guard: ((...args: any[]) => any) | null;
+    Layout: ((...args: any[]) => any) | null;
+    Component: ((...args: any[]) => any) | null;
     routes: IRoute[];
 }
 
@@ -16,23 +16,28 @@ function CreateRoute({path, Guard, Component, Layout, routes}: ICreateRouteProps
     if (Guard || Layout) {
         if (!Layout) throw "Layout is not Provided";
 
+        //@ts-ignore
+        const out: IRoute = [];
+
         const Wrapper = Guard && <Guard><Layout /></Guard> || <Layout />;
-        const route: NonIndexRouteObject = {
+        const route: IRouteElement = {
             path: path,
             element: Wrapper,
-            children: [{path: "", element: Component && <Component />}]
+            children: [{path: "", element: Component && <Component />}],
+            Route: out,
+            Check: true,
         }
-        //@ts-ignore
-        const out: IRoute = [route];
+
+        out.push(route);
+
 
         routes.forEach(routeNode => {
             const compiledPath = routeNode.map(route => {
-                route.Route.PATH = (path + "/" + route.path).replace(/\/+/, "/");
-                return ({...route, path: route.Route.PATH});
+                return ({...route, path: route.path});
             });
             route.children!.push(...compiledPath)
         })
-        out.PATH = path;
+        // out.PATH = path;
         return out;
     }
     //@ts-ignore
@@ -40,17 +45,17 @@ function CreateRoute({path, Guard, Component, Layout, routes}: ICreateRouteProps
     const route: IRouteElement = {
         path: path,
         element: Component && <Component />,
-        Route: out
+        Route: out,
+        Check: true
     }
     out.push(route);
     routes.forEach(routeNode => {
         const compiledPath = routeNode.map(route => {
-            route.Route.PATH = (path + "/" +  route.path).replace(/\/+/, "/")
-            return ({...route, path: route.Route.PATH});
+            return ({...route, path: (path + "/" +  route.path).replace(/\/+/, "/")});
         });
         out.push(...compiledPath)
     })
-    out.PATH = path;
+    // out.PATH = path;
     return out;
 }
 
