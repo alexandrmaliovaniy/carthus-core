@@ -57,7 +57,7 @@ function CreateData<T extends Array<any>, K extends z.Schema, M extends Readonly
 
     type ReturnData = Spread<[() => z.infer<typeof Schema>, ...typeof middleware]>
     type FuncReturn<T> = T extends [] ? Return<typeof Source, z.infer<typeof Schema>> : Return<typeof Source, ReturnData>;
-    return (...args: T): FuncReturn<typeof middleware> => {
+    return (...args: T): Return<typeof Source, z.infer<typeof Schema>> /*FuncReturn<typeof middleware>*/ => {
         if (Source.constructor.name === 'AsyncFunction') {
             return Source(...args)
                 .then(result => {
