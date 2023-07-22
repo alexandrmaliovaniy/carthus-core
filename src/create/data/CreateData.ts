@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import {infer, z} from 'zod';
 
 interface ICreateData<T extends Array<any>, K extends z.Schema, M extends ReadonlyArray<(...args: any) => any>, C extends ((...args: T) => Promise<any>) | ((...args: T) => any)> {
     Schema: K,
@@ -57,7 +57,8 @@ function CreateData<T extends Array<any>, K extends z.Schema, M extends Readonly
 
     type ReturnData = Spread<[() => z.infer<typeof Schema>, ...typeof middleware]>
     type FuncReturn<T> = T extends [] ? Return<typeof Source, z.infer<typeof Schema>> : Return<typeof Source, ReturnData>;
-    return (...args: T): Return<typeof Source, z.infer<typeof Schema>> /*FuncReturn<typeof middleware>*/ => {
+    type Result = typeof Source extends () => infer U ? U : never;
+    return (...args: T): Result  /*FuncReturn<typeof middleware>*/ => {
         if (Source.constructor.name === 'AsyncFunction') {
             return Source(...args)
                 .then(result => {
