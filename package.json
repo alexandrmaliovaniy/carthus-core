@@ -1,6 +1,6 @@
 {
   "name": "@carthus/core",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Utility functions for React",
   "keywords": [
     "react",

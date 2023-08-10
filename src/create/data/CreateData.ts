@@ -62,7 +62,8 @@ function CreateData<T extends Array<any>, K extends z.Schema, M extends Readonly
         if (Source.constructor.name === 'AsyncFunction') {
             return Source(...args)
                 .then(result => {
-                    Schema.parse(result);
+                    const res = Schema.safeParse(result);
+                    if (!res.success) console.error(`Zod: Received object is invalid: \n${JSON.stringify(result, null, 2)}`)
                     let finalRes = result as z.infer<typeof Schema>;
                     for (const md of middleware) {
                         finalRes = md(finalRes);
@@ -71,7 +72,8 @@ function CreateData<T extends Array<any>, K extends z.Schema, M extends Readonly
                 })
         }
         const result = Source(...args);
-        Schema.parse(result);
+        const res = Schema.safeParse(result);
+        if (!res.success) console.error(`Zod: Received object is invalid: \n${JSON.stringify(result, null, 2)}`)
         let finalRes = result as z.infer<typeof Schema>;
         for (const md of middleware) {
             finalRes = md(finalRes);
